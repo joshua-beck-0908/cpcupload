@@ -45,7 +45,13 @@ class _Bootstrap:
         except OSError as e:
             os.mkdir(dirname)
         os.chdir(dirname)
-                
+        
+    def deleteFile(self, filename):
+        try:
+            os.remove(filename)
+        except OSError as e:
+            print('ERR')
+            print(traceback.format_exception(e)[0])
 
     def run(self):
         while not self.dataReady():
@@ -53,15 +59,17 @@ class _Bootstrap:
 
         self.data = ''
         while True:
-            filename = input()
-            if filename == '-':
+            cmd = input()
+            if cmd == '-':
                 break
-            elif filename == '':
-                continue
-            elif filename.startswith('@dir'):
-                self.setdir(filename.split(':')[1])
-                continue
-            self.readfile(filename)
+            elif cmd == '':
+                pass
+            elif cmd.startswith('@dir'):
+                self.setdir(cmd.split(':')[1])
+            elif cmd.startswith('@del'):
+                self.deleteFile(cmd.split(':')[1])
+            else:
+                self.readfile(cmd)
         microcontroller.reset()
 
 try:

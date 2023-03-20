@@ -123,6 +123,10 @@ def sendDir(path):
             sendFile(fn)
     cmd(f'@dir:..')
 
+def deleteFile(filename):
+    print(f'Deleting file:{filename}...')
+    cmd(f'@del:{filename}')
+
 def copyData():
     time.sleep(1)
     cp.flush()
