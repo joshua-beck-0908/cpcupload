@@ -1,0 +1,22 @@
+{
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        ".",
+        "-p",
+        "*_test.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true,
+    "python.languageServer": "Pylance",
+    "python.linting.pylintEnabled": false,
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingModuleSource": "none"
+    },
+    "python.analysis.extraPaths": [
+        "",
+        "/home/joshua/.vscode-insiders/extensions/joedevivo.vscode-circuitpython-0.1.20-linux-x64/stubs",
+        "/home/joshua/.config/Code - Insiders/User/globalStorage/joedevivo.vscode-circuitpython/bundle/20230609/adafruit-circuitpython-bundle-py-20230609/lib"
+    ],
+    "circuitpython.board.version": null
+}

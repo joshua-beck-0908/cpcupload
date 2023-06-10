@@ -21,22 +21,38 @@ blockSize = 64
 
 cp = serial.Serial(args.port, 115200)
 
-def sendBootstrap():
+def hwReset():
+    cp.setDTR(False)
+    time.sleep(0.5)
+    cp.setDTR(True)
+    time.sleep(20)
+
+def swReset():
     cp.reset_input_buffer()
     cp.write(b'\x03\x02\x03\x03')
     time.sleep(0.3)
     cp.write(b'\r\r')
     time.sleep(0.2)
+
+def sendBootstrap():
+    swReset()
     if not cp.read_all().endswith(b'>>> '):
-        raise RuntimeError('Board not responding.')
+        print('Not responding. Resetting board...')
+        hwReset()
+        swReset()
+        if not cp.read_all().endswith(b'>>> '):
+            raise RuntimeError('Board not responding.')
     cp.write(b'\x01')
-    time.sleep(0.2)
-    if not cp.read_all().endswith(b'raw REPL; CTRL-B to exit\r\n>'):
+    time.sleep(0.4)
+    if b'raw REPL; CTRL-B to exit\r\n>' in cp.read_all():
+    #if not cp.read_all().endswith(b'raw REPL; CTRL-B to exit\r\n>'):
         raise RuntimeError('Board did not enter paste mode.')
     cp.write(b'\x05A\x01')
     response = cp.read(2)
+    if response[0] == 0x3e:
+        response = response[1:] + cp.read(1)
     if response != b'R\x01':
-        raise RuntimeError('Board does not support Raw REPL mode.')
+        raise RuntimeError(f'Board does not support Raw REPL mode. Response is: {response.hex()}')
     windowInterval = int.from_bytes(cp.read(2), byteorder='little', signed=False)
     window = windowInterval
 
